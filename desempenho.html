@@ -1,0 +1,502 @@
+<html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prepatech - Desempenho</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+    :root {
+        --primary: #6B46C1;
+        --primary-light: #9F7AEA;
+        --primary-dark: #553C9A;
+        --white: #FFFFFF;
+        --gray-light: #F7FAFC;
+        --gray-dark: #4A5568;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    
+    body {
+        background: var(--gray-light);
+        min-height: 100vh;
+    }
+    
+    .nav {
+        background: var(--white);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 1rem 2rem;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: var(--primary);
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-decoration: none;
+    }
+    
+    .logo svg {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+    }
+    
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--gray-dark);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-link:hover {
+        background: var(--primary-light);
+        color: var(--white);
+    }
+    
+    .nav-link.active {
+        background: var(--primary);
+        color: var(--white);
+    }
+    
+    .nav-link svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .main-content {
+        margin-top: 80px;
+        padding: 2rem;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .welcome-section {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .welcome-section h1 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+    
+    .study-image {
+        max-width: 400px;
+        margin: 2rem auto;
+        display: block;
+    }
+    
+    .welcome-section p {
+        margin-bottom: 2rem;
+    }
+    
+    .performance-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .performance-card {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .performance-card h2 {
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+    }
+    
+    .difficulty-list {
+        list-style: none;
+    }
+    
+    .difficulty-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem;
+        border-bottom: 1px solid #edf2f7;
+    }
+    
+    .difficulty-score {
+        background: var(--primary-light);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+    }
+    
+    .points-needed {
+        text-align: center;
+        padding: 2rem;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        border-radius: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .points-number {
+        font-size: 3rem;
+        font-weight: bold;
+        margin: 1rem 0;
+    }
+    
+    .study-tracks {
+        margin-top: 2rem;
+    }
+    
+    .track-card {
+        background: var(--gray-light);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--primary);
+    }
+    
+    .track-card h3 {
+        color: var(--primary-dark);
+        margin-bottom: 0.5rem;
+    }
+    
+    .track-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .track-button {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+    
+    .track-button:hover {
+        background: var(--primary-dark);
+    }
+    
+    .charts-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .chart-wrapper {
+        width: 100%;
+        height: 400px;
+        padding: 1rem;
+    }
+    
+    .chart-wrapper h3 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .nav-links {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .nav-link {
+            font-size: 0.9rem;
+        }
+        
+        .performance-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .charts-container {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    </style>
+    </head>
+    <body>
+        <nav class="nav">
+            <div class="nav-container">
+                <a href="/" class="logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    Prepatech
+                </a>
+                <div class="nav-links">
+                    <a href="simulados.html" class="nav-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        Simulados
+                    </a>
+                    <a href="desempenho.html" class="nav-link active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"></path>
+                            <line x1="18" y1="9" x2="12" y2="15"></line>
+                            <line x1="12" y1="9" x2="18" y2="15"></line>
+                        </svg>
+                        Desempenho
+                    </a>
+                    <a href="materias.html" class="nav-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        Matérias
+                    </a>
+                    <a href="flashcards.html" class="nav-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="4" width="20" height="16" rx="2"/>
+                            <path d="M12 8v8"/>
+                            <path d="M8 12h8"/>
+                        </svg>
+                        Flash Cards
+                    </a>
+                    <a href="redacao" class="nav-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                            <line x1="10" y1="9" x2="8" y2="9"/>
+                        </svg>
+                        Redação
+                    </a>
+
+                    <a href="/assistente" class="nav-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        Assistente
+                    </a>
+                </div>
+            </div>
+        </nav>
+    
+        <main class="main-content">
+            <div class="points-needed">
+                <h2>Pontos necessários para aprovação</h2>
+                <div class="points-number">157</div>
+                <p>pontos para atingir a nota de corte do seu curso</p>
+            </div>
+    
+            <div class="performance-grid">
+                <div class="performance-card">
+                    <h2>Matérias com Maior Dificuldade</h2>
+                    <ul class="difficulty-list">
+                        <li class="difficulty-item">
+                            <span>Matemática - Trigonometria</span>
+                            <span class="difficulty-score">65%</span>
+                        </li>
+                        <li class="difficulty-item">
+                            <span>Física - Mecânica</span>
+                            <span class="difficulty-score">70%</span>
+                        </li>
+                        <li class="difficulty-item">
+                            <span>Química - Orgânica</span>
+                            <span class="difficulty-score">72%</span>
+                        </li>
+                    </ul>
+                </div>
+    
+                <div class="performance-card">
+                    <h2>Desempenho por Disciplina</h2>
+                    <div class="charts-container">
+                        <div class="chart-wrapper">
+                            <h3>Exatas</h3>
+                            <canvas id="exactasChart"></canvas>
+                        </div>
+                        <div class="chart-wrapper">
+                            <h3>Humanas</h3>
+                            <canvas id="humanasChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="performance-card study-tracks">
+                <h2>Trilhas de Reforço Recomendadas</h2>
+                
+                <div class="track-card">
+                    <h3>Trigonometria Básica</h3>
+                    <p>Revisão completa de conceitos fundamentais e exercícios práticos</p>
+                    <div class="track-actions">
+                        <a href="/materias/matematica/trigonometria" class="track-button">Iniciar Estudos</a>
+                        <a href="/simulados/matematica/trigonometria" class="track-button">Praticar Questões</a>
+                    </div>
+                </div>
+    
+                <div class="track-card">
+                    <h3>Mecânica - Força e Movimento</h3>
+                    <p>Aulas focadas em conceitos básicos e resolução de problemas</p>
+                    <div class="track-actions">
+                        <a href="/materias/fisica/mecanica" class="track-button">Iniciar Estudos</a>
+                        <a href="/simulados/fisica/mecanica" class="track-button">Praticar Questões</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    
+        <script>
+            const exactasCtx = document.getElementById('exactasChart').getContext('2d');
+            const humanasCtx = document.getElementById('humanasChart').getContext('2d');
+    
+            const exactasChart = new Chart(exactasCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                    datasets: [{
+                        label: 'Matemática',
+                        data: [65, 68, 70, 72, 75, 73],
+                        borderColor: '#FF0000',
+                        backgroundColor: '#FF000044',
+                        borderWidth: 3,
+                        tension: 0.3
+                    }, {
+                        label: 'Física',
+                        data: [70, 72, 75, 73, 76, 78],
+                        borderColor: '#FF7F00',
+                        backgroundColor: '#FF7F0044',
+                        borderWidth: 3,
+                        tension: 0.3
+                    }, {
+                        label: 'Química',
+                        data: [72, 75, 77, 80, 82, 85],
+                        borderColor: '#FFFF00',
+                        backgroundColor: '#FFFF0044',
+                        borderWidth: 3,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 50,
+                            max: 100
+                        }
+                    }
+                }
+            });
+    
+            const humanasChart = new Chart(humanasCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                    datasets: [{
+                        label: 'História',
+                        data: [78, 80, 82, 85, 87, 88],
+                        borderColor: '#00FF00',
+                        backgroundColor: '#00FF0044',
+                        borderWidth: 3,
+                        tension: 0.3
+                    }, {
+                        label: 'Geografia',
+                        data: [75, 77, 79, 81, 83, 85],
+                        borderColor: '#0000FF',
+                        backgroundColor: '#0000FF44',
+                        borderWidth: 3,
+                        tension: 0.3
+                    }, {
+                        label: 'Filosofia',
+                        data: [80, 82, 83, 85, 86, 88],
+                        borderColor: '#4B0082',
+                        backgroundColor: '#4B008244',
+                        borderWidth: 3,
+                        tension: 0.3
+                    }, {
+                        label: 'Sociologia',
+                        data: [82, 83, 85, 86, 87, 89],
+                        borderColor: '#9400D3',
+                        backgroundColor: '#9400D344',
+                        borderWidth: 3,
+                        tension: 0.3
+                    }, {
+                        label: 'Português',
+                        data: [77, 79, 81, 83, 85, 86],
+                        borderColor: '#FF1493',
+                        backgroundColor: '#FF149344',
+                        borderWidth: 3,
+                        tension: 0.3
+                    }, {
+                        label: 'Literatura',
+                        data: [76, 78, 80, 82, 84, 85],
+                        borderColor: '#00FFFF',
+                        backgroundColor: '#00FFFF44',
+                        borderWidth: 3,
+                        tension: 0.3
+                    }, {
+                        label: 'Inglês',
+                        data: [85, 86, 87, 88, 89, 90],
+                        borderColor: '#FF69B4',
+                        backgroundColor: '#FF69B444',
+                        borderWidth: 3,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 50,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        </script>
+    </body>
+    </html>

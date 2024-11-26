@@ -1,0 +1,782 @@
+<html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prepatech - Simulados</title>
+    <style>
+    :root {
+        --primary: #6B46C1;
+        --primary-light: #9F7AEA;
+        --primary-dark: #553C9A;
+        --white: #FFFFFF;
+        --gray-light: #F7FAFC;
+        --gray-dark: #4A5568;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    
+    body {
+        background: var(--gray-light);
+        min-height: 100vh;
+    }
+    
+    .nav {
+        background: var(--white);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 1rem 2rem;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: var(--primary);
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-decoration: none;
+    }
+    
+    .logo svg {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+    }
+    
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--gray-dark);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-link:hover {
+        background: var(--primary-light);
+        color: var(--white);
+    }
+    
+    .nav-link.active {
+        background: var(--primary);
+        color: var(--white);
+    }
+    
+    .nav-link svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .main-content {
+        margin-top: 80px;
+        padding: 2rem;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .welcome-section {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .welcome-section h1 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+    
+    .exam-types-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .exam-card {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .exam-card h2 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+    
+    .exam-details {
+        list-style: none;
+        margin: 1rem 0;
+    }
+    
+    .exam-details li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--gray-light);
+    }
+    
+    .start-exam-btn {
+        width: 100%;
+        padding: 1rem;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        margin-top: 1rem;
+        transition: background 0.3s;
+    }
+    
+    .start-exam-btn:hover {
+        background: var(--primary-dark);
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1100;
+    }
+    
+    .modal-content {
+        background: white;
+        width: 90%;
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        border-radius: 1rem;
+    }
+    
+    .results-content {
+        max-width: 800px;
+    }
+    
+    .score-summary {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin: 2rem 0;
+    }
+    
+    .score-circle {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 8px solid var(--primary);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: var(--white);
+    }
+    
+    .final-score {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+    
+    .score-label {
+        font-size: 1rem;
+        color: var(--gray-dark);
+    }
+    
+    .cutoff-comparison {
+        width: 50%;
+    }
+    
+    .cutoff-bar {
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 4px;
+        position: relative;
+        margin: 1rem 0;
+    }
+    
+    .user-score-marker,
+    .cutoff-marker {
+        position: absolute;
+        width: 4px;
+        height: 16px;
+        top: -4px;
+    }
+    
+    .user-score-marker {
+        background: var(--primary);
+    }
+    
+    .cutoff-marker {
+        background: #e53e3e;
+    }
+    
+    .performance-breakdown {
+        background: var(--gray-light);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        margin: 2rem 0;
+    }
+    
+    .category-scores {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .category-item {
+        background: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .category-score {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .review-errors-btn,
+    .return-home-btn {
+        flex: 1;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+    
+    .review-errors-btn {
+        background: var(--primary);
+        color: white;
+    }
+    
+    .review-errors-btn:hover {
+        background: var(--primary-dark);
+    }
+    
+    .return-home-btn {
+        background: var(--gray-light);
+        color: var(--gray-dark);
+    }
+    
+    .return-home-btn:hover {
+        background: #e2e8f0;
+    }
+    
+    .exam-container {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .exam-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .timer {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.5rem;
+        color: var(--primary);
+    }
+    
+    .difficulty {
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .difficulty.easy { background: #4CAF50; color: white; }
+    .difficulty.medium { background: #FFC107; color: black; }
+    .difficulty.hard { background: #F44336; color: white; }
+    
+    .question-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+    }
+    
+    .hidden {
+        display: none;
+    }
+    
+    /* Add styles for expanded exam options */
+    .exam-phases {
+        margin-top: 1rem;
+        padding: 0.5rem;
+        background: var(--gray-light);
+        border-radius: 0.5rem;
+    }
+    
+    .phase-select {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .phase-btn {
+        flex: 1;
+        padding: 0.5rem;
+        border: 1px solid var(--primary);
+        background: var(--white);
+        color: var(--primary);
+        border-radius: 0.25rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .phase-btn.active {
+        background: var(--primary);
+        color: var(--white);
+    }
+    </style>
+    </head>
+    <body>
+        <nav class="nav">
+            <div class="nav-container">
+                <a href="/" class="logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    Prepatech
+                </a>
+                <div class="nav-links">
+                    <a href="simulados.html" class="nav-link active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        Simulados
+                    </a>
+                    <a href="desempenho.html" class="nav-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"></path>
+                            <line x1="18" y1="9" x2="12" y2="15"></line>
+                            <line x1="12" y1="9" x2="18" y2="15"></line>
+                        </svg>
+                        Desempenho
+                    </a>
+                    <a href="materias.html" class="nav-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        Matérias
+                    </a>
+                    <a href="flashcards.html" class="nav-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="4" width="20" height="16" rx="2"/>
+                            <path d="M12 8v8"/>
+                            <path d="M8 12h8"/>
+                        </svg>
+                        Flash Cards
+                    </a>
+                    <a href="redacao" class="nav-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                            <line x1="10" y1="9" x2="8" y2="9"/>
+                        </svg>
+                        Redação
+                    </a>
+
+                    <a href="/assistente" class="nav-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        Assistente
+                    </a>
+                </div>
+            </div>
+        </nav>
+    
+        <div class="main-content">
+            <div class="welcome-section">
+                <h1>Simulados</h1>
+                <p>Escolha o tipo de simulado para começar sua preparação</p>
+            </div>
+    
+            <div class="exam-types-grid">
+                <div class="exam-card">
+                    <h2>ENEM</h2>
+                    <p>180 questões por dia • 5h30 de duração</p>
+                    <div class="exam-phases">
+                        <div class="phase-select">
+                            <button class="phase-btn" data-exam="enem" data-phase="1">Dia 1</button>
+                            <button class="phase-btn" data-exam="enem" data-phase="2">Dia 2</button>
+                        </div>
+                    </div>
+                    <ul class="exam-details">
+                        <li>Ciências Humanas</li>
+                        <li>Ciências da Natureza</li>
+                        <li>Linguagens e Códigos</li>
+                        <li>Matemática</li>
+                        <li>Redação</li>
+                    </ul>
+                    <button class="start-exam-btn" data-exam="enem">Começar Simulado</button>
+                </div>
+    
+                <div class="exam-card">
+                    <h2>FUVEST</h2>
+                    <p>90 questões • 4h de duração</p>
+                    <div class="exam-phases">
+                        <div class="phase-select">
+                            <button class="phase-btn" data-exam="fuvest" data-phase="1">1ª Fase</button>
+                            <button class="phase-btn" data-exam="fuvest" data-phase="2">2ª Fase</button>
+                        </div>
+                    </div>
+                    <ul class="exam-details">
+                        <li>Questões Objetivas</li>
+                        <li>Questões Discursivas</li>
+                    </ul>
+                    <button class="start-exam-btn" data-exam="fuvest">Começar Simulado</button>
+                </div>
+    
+                <div class="exam-card">
+                    <h2>UNICAMP</h2>
+                    <p>72 questões • 4h de duração</p>
+                    <div class="exam-phases">
+                        <div class="phase-select">
+                            <button class="phase-btn" data-exam="unicamp" data-phase="1">1ª Fase</button>
+                            <button class="phase-btn" data-exam="unicamp" data-phase="2">2ª Fase</button>
+                        </div>
+                    </div>
+                    <ul class="exam-details">
+                        <li>Questões Dissertativas</li>
+                        <li>Redação</li>
+                    </ul>
+                    <button class="start-exam-btn" data-exam="unicamp">Começar Simulado</button>
+                </div>
+            </div>
+    
+            <div id="examModal" class="modal">
+                <div class="modal-content">
+                    <h2>Instruções do Simulado</h2>
+                    <div class="instructions">
+                        <p>• O simulado será encerrado automaticamente ao término do tempo</p>
+                        <p>• Não é possível pausar o tempo durante a prova</p>
+                        <p>• Suas respostas são salvas automaticamente</p>
+                        <p>• Use o marcador de questões para revisão</p>
+                    </div>
+                    <div class="timer-preview">
+                        <span>Tempo de prova:</span>
+                        <span class="time-display">05:30:00</span>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="cancel-btn">Cancelar</button>
+                        <button class="confirm-btn">Iniciar Simulado</button>
+                    </div>
+                </div>
+            </div>
+    
+            <div id="examContainer" class="exam-container hidden">
+                <div class="exam-header">
+                    <div class="timer">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <span id="examTimer">05:30:00</span>
+                    </div>
+                    <button class="finish-exam-btn">Finalizar Simulado</button>
+                </div>
+    
+                <div class="question-container">
+                    <div class="question-header">
+                        <span class="question-number">Questão 1</span>
+                        <span class="difficulty easy">Fácil</span>
+                    </div>
+                    <div class="question-content">
+                        <p class="question-text">Exemplo de questão do simulado...</p>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q1" value="a">
+                                <span class="option-text">A) Primeira opção de resposta</span>
+                            </label>
+                            <!-- More options -->
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="exam-navigation">
+                    <button class="nav-btn prev">Anterior</button>
+                    <div class="question-markers">
+                        <!-- Generated by JS -->
+                    </div>
+                    <button class="nav-btn next">Próxima</button>
+                </div>
+            </div>
+    
+            <div id="resultsModal" class="modal">
+                <div class="modal-content results-content">
+                    <h2>Resultado do Simulado</h2>
+                    
+                    <div class="score-summary">
+                        <div class="score-circle">
+                            <span class="final-score">0</span>
+                            <span class="score-label">Pontos</span>
+                        </div>
+                        
+                        <div class="cutoff-comparison">
+                            <div class="cutoff-bar">
+                                <div class="user-score-marker"></div>
+                                <div class="cutoff-marker"></div>
+                            </div>
+                            <span class="cutoff-label">Nota de Corte: <span class="cutoff-value">0</span></span>
+                        </div>
+                    </div>
+    
+                    <div class="performance-breakdown">
+                        <h3>Desempenho por Área</h3>
+                        <div class="category-scores">
+                            <!-- Will be populated by JS -->
+                        </div>
+                    </div>
+    
+                    <div class="action-buttons">
+                        <button class="review-errors-btn">Revisar Erros</button>
+                        <button class="return-home-btn">Voltar ao Início</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const startButtons = document.querySelectorAll('.start-exam-btn');
+                const phaseButtons = document.querySelectorAll('.phase-btn');
+                const modal = document.getElementById('examModal');
+                const examContainer = document.getElementById('examContainer');
+                const confirmBtn = document.querySelector('.confirm-btn');
+                const cancelBtn = document.querySelector('.cancel-btn');
+                const timerDisplay = document.getElementById('examTimer');
+                const finishExamBtn = document.querySelector('.finish-exam-btn');
+                const resultsModal = document.getElementById('resultsModal');
+                const reviewErrorsBtn = document.querySelector('.review-errors-btn');
+                const returnHomeBtn = document.querySelector('.return-home-btn');
+    
+                let selectedExam = null;
+                let selectedPhase = null;
+                let examTimer;
+                let timeLeft;
+    
+                const examTimes = {
+                    'enem': 5.5 * 3600, // 5h30
+                    'fuvest': 4 * 3600, // 4h
+                    'unicamp': 4 * 3600 // 4h
+                };
+    
+                const examData = {
+                    questions: [],
+                    userAnswers: {},
+                    correctAnswers: {},
+                    categories: {
+                        'Matemática': [],
+                        'Português': [],
+                        'História': [],
+                        // Add other categories
+                    }
+                };
+    
+                phaseButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const parent = e.target.closest('.phase-select');
+                        parent.querySelectorAll('.phase-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        selectedExam = btn.dataset.exam;
+                        selectedPhase = btn.dataset.phase;
+                    });
+                });
+    
+                startButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const examCard = btn.closest('.exam-card');
+                        const activePhase = examCard.querySelector('.phase-btn.active');
+                        
+                        if (!activePhase) {
+                            alert('Por favor, selecione uma fase do exame.');
+                            return;
+                        }
+    
+                        selectedExam = activePhase.dataset.exam;
+                        selectedPhase = activePhase.dataset.phase;
+                        
+                        updateModalContent(selectedExam, selectedPhase);
+                        modal.style.display = 'block';
+                    });
+                });
+    
+                function updateModalContent(exam, phase) {
+                    const timeDisplay = document.querySelector('.time-display');
+                    timeDisplay.textContent = formatTime(examTimes[exam]);
+                    
+                    const instructions = document.querySelector('.instructions');
+                    instructions.innerHTML = getExamInstructions(exam, phase);
+                }
+    
+                function getExamInstructions(exam, phase) {
+                    const instructions = {
+                        'enem': {
+                            '1': '• Dia 1: Linguagens, Códigos e Redação<br>• Ciências Humanas',
+                            '2': '• Dia 2: Ciências da Natureza<br>• Matemática'
+                        },
+                        'fuvest': {
+                            '1': '• 1ª Fase: 90 questões objetivas<br>• Todas as áreas do conhecimento',
+                            '2': '• 2ª Fase: Questões dissertativas<br>• Redação'
+                        },
+                        'unicamp': {
+                            '1': '• 1ª Fase: 72 questões dissertativas',
+                            '2': '• 2ª Fase: Provas específicas por curso'
+                        }
+                    };
+    
+                    return `
+                        <p>${instructions[exam][phase]}</p>
+                        <p>• O simulado será encerrado automaticamente ao término do tempo</p>
+                        <p>• Não é possível pausar o tempo durante a prova</p>
+                        <p>• Suas respostas são salvas automaticamente</p>
+                        <p>• Use o marcador de questões para revisão</p>
+                    `;
+                }
+    
+                function formatTime(seconds) {
+                    const h = Math.floor(seconds / 3600);
+                    const m = Math.floor((seconds % 3600) / 60);
+                    const s = seconds % 60;
+                    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                }
+    
+                function startTimer(duration) {
+                    timeLeft = duration;
+                    examTimer = setInterval(() => {
+                        timeLeft--;
+                        timerDisplay.textContent = formatTime(timeLeft);
+                        
+                        if (timeLeft <= 0) {
+                            clearInterval(examTimer);
+                            alert('Tempo esgotado!');
+                        }
+                    }, 1000);
+                }
+    
+                confirmBtn.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                    examContainer.classList.remove('hidden');
+                    startTimer(examTimes[selectedExam]);
+                });
+    
+                cancelBtn.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
+    
+                finishExamBtn.addEventListener('click', () => {
+                    clearInterval(examTimer);
+                    showResults();
+                });
+    
+                function showResults() {
+                    const results = calculateResults();
+                    updateResultsDisplay(results);
+                    examContainer.classList.add('hidden');
+                    resultsModal.style.display = 'block';
+                }
+    
+                function calculateResults() {
+                    const totalQuestions = examData.questions.length;
+                    const correctAnswers = Object.keys(examData.userAnswers).filter(q => 
+                        examData.userAnswers[q] === examData.correctAnswers[q]
+                    ).length;
+                    
+                    return {
+                        score: Math.round((correctAnswers / totalQuestions) * 1000),
+                        categoryScores: calculateCategoryScores(),
+                        cutoffScore: 750 // Example cutoff score
+                    };
+                }
+    
+                function calculateCategoryScores() {
+                    return Object.keys(examData.categories).map(category => ({
+                        name: category,
+                        score: Math.round(Math.random() * 100) // Replace with actual calculation
+                    }));
+                }
+    
+                function updateResultsDisplay(results) {
+                    document.querySelector('.final-score').textContent = results.score;
+                    document.querySelector('.cutoff-value').textContent = results.cutoffScore;
+    
+                    const userScorePercent = (results.score / 1000) * 100;
+                    const cutoffPercent = (results.cutoffScore / 1000) * 100;
+    
+                    document.querySelector('.user-score-marker').style.left = `${userScorePercent}%`;
+                    document.querySelector('.cutoff-marker').style.left = `${cutoffPercent}%`;
+    
+                    const categoryScoresContainer = document.querySelector('.category-scores');
+                    categoryScoresContainer.innerHTML = results.categoryScores.map(category => `
+                        <div class="category-item">
+                            <div class="category-name">${category.name}</div>
+                            <div class="category-score">${category.score}%</div>
+                        </div>
+                    `).join('');
+                }
+    
+                reviewErrorsBtn.addEventListener('click', () => {
+                    resultsModal.style.display = 'none';
+                    examContainer.classList.remove('hidden');
+                    // Implement review mode logic
+                });
+    
+                returnHomeBtn.addEventListener('click', () => {
+                    resultsModal.style.display = 'none';
+                    window.location.reload();
+                });
+            });
+        </script>
+    </body>
+    </html>
